@@ -1,0 +1,269 @@
+# 🚫 Node.js Chat Application - .gitignore
+
+# ========================
+# 📦 Node.js Dependencies
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ========================
+# 🔐 Environment & Config
+# ========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.json
+secrets.json
+
+# ========================
+# 📁 File Uploads & Media
+# ========================
+uploads/
+upload/
+temp/
+tmp/
+*.tmp
+*.temp
+
+# ========================
+# 🗄️ Database Files
+# ========================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+database.json
+*.sql.backup
+
+# ========================
+# 📝 Logs & Debug
+# ========================
+logs/
+*.log
+*.log.*
+pids
+*.pid
+*.seed
+*.pid.lock
+lib-cov
+coverage/
+nyc_output/
+.grunt
+.lock-wscript
+
+# ========================
+# 🏗️ Build & Distribution
+# ========================
+build/
+dist/
+out/
+.next/
+.nuxt/
+.vuepress/dist
+.serverless/
+
+# ========================
+# 🔧 Development Tools
+# ========================
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+.idea/
+*.swp
+*.swo
+*~
+
+# ========================
+# 🖥️ Operating System
+# ========================
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ========================
+# 📱 Mobile & Hybrid Apps
+# ========================
+*.apk
+*.aab
+*.ipa
+
+# ========================
+# 🧪 Testing & Coverage
+# ========================
+test-results/
+coverage/
+*.lcov
+.nyc_output
+junit.xml
+
+# ========================
+# 🔄 Version Control
+# ========================
+.git/
+.svn/
+.hg/
+.bzr/
+
+# ========================
+# 📊 Analytics & Monitoring
+# ========================
+.newrelic_agent.log
+
+# ========================
+# 🚀 Deployment
+# ========================
+.vercel
+.netlify
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+
+# ========================
+# 🔑 Security & Keys
+# ========================
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+.ssh/
+auth.json
+credentials.json
+service-account.json
+
+# ========================
+# 💾 Cache & Temporary
+# ========================
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.sass-cache/
+*.tsbuildinfo
+
+# ========================
+# 📦 Package Managers
+# ========================
+.yarn/
+.pnp.*
+yarn.lock
+package-lock.json
+.npm
+.eslintcache
+
+# ========================
+# 🎨 Design & Assets
+# ========================
+*.psd
+*.ai
+*.sketch
+*.fig
+*.xd
+
+# ========================
+# 📋 Documentation Temp
+# ========================
+docs/build/
+site/
+
+# ========================
+# 🔧 Configuration Backup
+# ========================
+*.backup
+*.bak
+*.orig
+
+# ========================
+# 🌐 Browser Testing
+# ========================
+.browserlistrc
+
+# ========================
+# 📈 Performance
+# ========================
+.vscode/settings.json
+
+# ========================
+# Chat App Specific
+# ========================
+# User uploaded files (keep structure, ignore content)
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.gif
+uploads/*.mp4
+uploads/*.mov
+uploads/*.avi
+uploads/*.pdf
+uploads/*.doc
+uploads/*.docx
+uploads/*.wav
+uploads/*.mp3
+uploads/*.ogg
+
+# Session files
+sessions/
+session.json
+
+# Debug dumps
+heapdump-*
+
+# Error screenshots
+screenshots/
+error-*.png
+
+# Keep essential directories but ignore their contents
+!uploads/.gitkeep
+!logs/.gitkeep
+!temp/.gitkeep
+
+# ========================
+# 🔚 End of .gitignore
+# ========================
