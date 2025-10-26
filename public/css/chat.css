@@ -1,24 +1,40 @@
 :root {
-  --primary-color: #a62212; /* Updated to softer red tone */
-  --secondary-color: #8b1e0f; /* Darker version of the new tone */
-  --success-color: #10b981; /* Keep green for success */
-  --error-color: #dc2626; /* Keep original red for errors */
-  --warning-color: #f59e0b; /* Keep orange for warning */
-  --info-color: #a62212; /* Updated to match primary */
+  --primary-color: #a62212;
+  /* Updated to softer red tone */
+  --secondary-color: #8b1e0f;
+  /* Darker version of the new tone */
+  --success-color: #10b981;
+  /* Keep green for success */
+  --error-color: #dc2626;
+  /* Keep original red for errors */
+  --warning-color: #f59e0b;
+  /* Keep orange for warning */
+  --info-color: #a62212;
+  /* Updated to match primary */
 
-  --bg-primary: #ffffff; /* Pure white background */
-  --bg-secondary: #f8fafc; /* Very light gray */
-  --bg-tertiary: #f1f5f9; /* Light gray */
+  --bg-primary: #ffffff;
+  /* Pure white background */
+  --bg-secondary: #f8fafc;
+  /* Very light gray */
+  --bg-tertiary: #f1f5f9;
+  /* Light gray */
 
-  --text-primary: #1f2937; /* Dark gray text */
-  --text-secondary: #374151; /* Medium gray text */
-  --text-tertiary: #6b7280; /* Light gray text */
-  --text-muted: #9ca3af; /* Muted gray text */
+  --text-primary: #1f2937;
+  /* Dark gray text */
+  --text-secondary: #374151;
+  /* Medium gray text */
+  --text-tertiary: #6b7280;
+  /* Light gray text */
+  --text-muted: #9ca3af;
+  /* Muted gray text */
 
-  --border-color: #e5e7eb; /* Light border */
-  --border-hover: #d1d5db; /* Hover border */
+  --border-color: #e5e7eb;
+  /* Light border */
+  --border-hover: #d1d5db;
+  /* Hover border */
 
-  --shadow-sm: 0 1px 3px rgba(166, 34, 18, 0.1); /* Updated shadow tint */
+  --shadow-sm: 0 1px 3px rgba(166, 34, 18, 0.1);
+  /* Updated shadow tint */
   --shadow-md: 0 4px 6px rgba(166, 34, 18, 0.1);
   --shadow-lg: 0 10px 15px rgba(166, 34, 18, 0.1);
 
@@ -479,6 +495,11 @@ body {
   background: white;
 }
 
+.mobile-back-btn {
+  display: none;
+  margin-right: 10px;
+}
+
 .chat-info {
   display: flex;
   align-items: center;
@@ -525,7 +546,8 @@ body {
 }
 
 .messages-container {
-  padding: 20px 20px 60px 20px; /* Added bottom padding for typing indicator */
+  padding: 20px 20px 60px 20px;
+  /* Added bottom padding for typing indicator */
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -563,7 +585,8 @@ body {
 
 /* Message without avatar (anonymous messages) */
 .message:not(.own):not(:has(.message-avatar)) {
-  padding-left: 42px; /* Add space where avatar would be for consistent alignment */
+  padding-left: 42px;
+  /* Add space where avatar would be for consistent alignment */
 }
 
 /* Fallback for browsers that don't support :has() */
@@ -716,7 +739,8 @@ body {
   padding: 12px 16px;
   box-shadow: var(--shadow-sm);
   max-width: 200px;
-  margin-left: 20px; /* Align to left like other users' messages */
+  margin-left: 20px;
+  /* Align to left like other users' messages */
 }
 
 .typing-dots {
@@ -741,12 +765,14 @@ body {
 }
 
 @keyframes typing {
+
   0%,
   80%,
   100% {
     transform: scale(0.8);
     opacity: 0.5;
   }
+
   40% {
     transform: scale(1);
     opacity: 1;
@@ -895,11 +921,13 @@ body {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.5;
     transform: scale(1.1);
@@ -1159,22 +1187,61 @@ body {
     flex-direction: column;
   }
 
+  /* Allow the page to scroll on mobile when soft keyboard is open */
+  body {
+    overflow: auto;
+  }
+
   .sidebar {
     width: 100%;
     height: 100vh;
     position: fixed;
     top: 0;
-    left: -100%;
+    left: 0;
     transition: left 0.3s;
     z-index: 100;
   }
 
-  .sidebar.active {
-    left: 0;
+  .sidebar.hide-mobile {
+    left: -100%;
   }
 
   .main-chat {
     width: 100%;
+    display: none;
+    /* Ensure chat takes full viewport height on mobile so input can stick to bottom */
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  .main-chat.show-mobile {
+    display: flex;
+  }
+
+  /* Make messages area grow and scroll while keeping input visible */
+  .messages-area {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    /* allow flex children to shrink properly in Chrome/Safari */
+    overflow-y: auto;
+  }
+
+  /* Keep input pinned to bottom of chat on mobile */
+  .message-input-area {
+    position: sticky;
+    bottom: 0;
+    z-index: 30;
+    background: white;
+  }
+
+  /* Add extra bottom padding inside messages container so last messages are not hidden behind the input */
+  .messages-container {
+    padding: 20px 20px 120px 20px;
+  }
+
+  .mobile-back-btn {
+    display: flex;
   }
 
   .message {
@@ -1202,6 +1269,7 @@ body {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -1247,6 +1315,7 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

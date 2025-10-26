@@ -304,14 +304,12 @@ class ChatApp {
         : `<span class="friend-status">Pending</span>`;
 
     div.innerHTML = `
-            <img src="${request.avatar}" alt="${
-      request.name
-    }" class="friend-avatar">
+            <img src="${request.avatar}" alt="${request.name
+      }" class="friend-avatar">
             <div class="friend-info">
                 <div class="friend-name">${request.name}</div>
-                <div class="friend-status">${
-                  type === "incoming" ? "Wants to be friends" : "Request sent"
-                }</div>
+                <div class="friend-status">${type === "incoming" ? "Wants to be friends" : "Request sent"
+      }</div>
             </div>
             <div class="friend-actions">
                 ${actions}
@@ -324,9 +322,16 @@ class ChatApp {
     const div = document.createElement("div");
     div.className = "group-item";
 
+    // Default SVG icon for groups (encoded when used as data URL)
+    const defaultGroupSvg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V20H24v-3.5C24 14.17 19.33 13 16 13z"/>
+      </svg>`;
+    const defaultGroupUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(defaultGroupSvg);
+
     const avatar = group.image
       ? `<img src="${group.image}" alt="${group.name}" class="group-avatar">`
-      : `<div class="group-avatar">👥</div>`;
+      : `<img src="${defaultGroupUrl}" alt="${group.name}" class="group-avatar">`;
 
     const actions = isJoined
       ? `<button class="btn-small btn-joined">Joined</button>`
@@ -352,11 +357,11 @@ class ChatApp {
     div.dataset.chatId = chat.id;
     div.dataset.chatType = type;
 
-    const avatar =
-      type === "group"
-        ? chat.image ||
-          'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.5 6zm-2.47-12.65L15.45 16l-1.43 5.46 1.43 1.43L17.77 16H20v-2h-4.23l-2.24-8.65zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zm-7-1.5c0-.83-.67-1.5-1.5-1.5S2.5 9.17 2.5 10s.67 1.5 1.5 1.5S5.5 10.83 5.5 10z"/></svg>'
-        : chat.avatar;
+    // Default group SVG for chat list items encoded as data URL
+    const defaultChatGroupSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V20H24v-3.5C24 14.17 19.33 13 16 13z"/></svg>`;
+    const defaultChatGroupUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(defaultChatGroupSvg);
+
+    const avatar = type === "group" ? (chat.image ? chat.image : defaultChatGroupUrl) : chat.avatar;
 
     const name = type === "group" ? chat.name : chat.name;
     const preview = "Click to start chatting"; // TODO: Load last message
@@ -465,6 +470,13 @@ class ChatApp {
       messageInput.addEventListener("input", () => {
         this.autoResizeTextarea(messageInput);
       });
+      // Ensure input stays visible on mobile when focused (soft keyboard may overlap)
+      messageInput.addEventListener("focus", () => {
+        // scroll without smooth to immediately reveal input area on mobile
+        this.scrollMessagesToBottom(false);
+        // also ensure slight delay to account for virtual keyboard animation
+        setTimeout(() => this.scrollMessagesToBottom(false), 300);
+      });
     }
 
     if (sendBtn) {
@@ -502,6 +514,17 @@ class ChatApp {
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
         this.logout();
+      });
+    }
+
+    // Mobile back button
+    const mobileBackBtn = document.getElementById("mobile-back-btn");
+    if (mobileBackBtn) {
+      mobileBackBtn.addEventListener("click", () => {
+        const sidebar = document.querySelector(".sidebar");
+        const mainChat = document.querySelector(".main-chat");
+        sidebar.classList.remove("hide-mobile");
+        mainChat.classList.remove("show-mobile");
       });
     }
 
@@ -794,6 +817,14 @@ class ChatApp {
     document.getElementById("messages-area").style.display = "flex";
     document.getElementById("message-input-area").style.display = "block";
 
+    // Mobile responsive: Hide sidebar and show main chat
+    const sidebar = document.querySelector(".sidebar");
+    const mainChat = document.querySelector(".main-chat");
+    if (window.innerWidth <= 768) {
+      sidebar.classList.add("hide-mobile");
+      mainChat.classList.add("show-mobile");
+    }
+
     // Update chat header
     document.getElementById("chat-avatar").src = chatInfo.avatar;
     document.getElementById("chat-name").textContent = chatInfo.name;
@@ -829,8 +860,10 @@ class ChatApp {
   }
 
   displayMessages(messages) {
+    // The scrollable element is `.messages-area` (it has overflow). Use it when available.
+    const scrollContainer = document.getElementById("messages-area") || document.getElementById("messages-container");
     const container = document.getElementById("messages-container");
-    if (!container) return;
+    if (!container || !scrollContainer) return;
 
     container.innerHTML = "";
 
@@ -839,12 +872,61 @@ class ChatApp {
       container.appendChild(messageElement);
     });
 
-    // Scroll to bottom after DOM updates
+    // If messages include media (images/videos) we should wait for them to load before scrolling
+    const mediaEls = container.querySelectorAll("img, video");
+    if (!mediaEls || mediaEls.length === 0) {
+      // No media - safe to scroll now
+      this.scrollMessagesToBottom(true);
+      return;
+    }
+
+    // Wait for all media to load (images -> load, videos -> loadedmetadata)
+    let remaining = mediaEls.length;
+    const tryScroll = () => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        this.scrollMessagesToBottom(true);
+      }
+    };
+
+    mediaEls.forEach((el) => {
+      if (el.tagName.toLowerCase() === "img") {
+        if (el.complete) {
+          tryScroll();
+        } else {
+          el.addEventListener("load", tryScroll, { once: true });
+          el.addEventListener("error", tryScroll, { once: true });
+        }
+      } else if (el.tagName.toLowerCase() === "video") {
+        if (el.readyState >= 1) {
+          tryScroll();
+        } else {
+          el.addEventListener("loadedmetadata", tryScroll, { once: true });
+          el.addEventListener("error", tryScroll, { once: true });
+        }
+      } else {
+        tryScroll();
+      }
+    });
+  }
+
+  // Smoothly scroll the messages container to the bottom
+  scrollMessagesToBottom(smooth = true) {
+    // Scroll the element that actually scrolls (messages-area). Fallback to messages-container.
+    const scrollEl = document.getElementById("messages-area") || document.getElementById("messages-container");
+    if (!scrollEl) return;
+    // small timeout to allow DOM to settle
     setTimeout(() => {
-      container.scrollTo({
-        top: container.scrollHeight,
-        behavior: "smooth",
-      });
+      try {
+        if (typeof scrollEl.scrollTo === "function") {
+          scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+        } else {
+          scrollEl.scrollTop = scrollEl.scrollHeight;
+        }
+      } catch (e) {
+        // fallback for older browsers
+        scrollEl.scrollTop = scrollEl.scrollHeight;
+      }
     }, 50);
   }
 
@@ -861,9 +943,8 @@ class ChatApp {
       senderName: message.sender_name,
     });
 
-    div.className = `message ${isOwn ? "own" : ""} ${
-      message.is_anonymous && !isOwn ? "anonymous" : ""
-    }`.trim();
+    div.className = `message ${isOwn ? "own" : ""} ${message.is_anonymous && !isOwn ? "anonymous" : ""
+      }`.trim();
     div.dataset.messageId = message.id;
 
     const senderName =
@@ -889,42 +970,36 @@ class ChatApp {
     }
 
     div.innerHTML = `
-            ${
-              shouldShowAvatar
-                ? `<img src="${message.sender_avatar}" alt="${senderName}" class="message-avatar">`
-                : ""
-            }
+            ${shouldShowAvatar
+        ? `<img src="${message.sender_avatar}" alt="${senderName}" class="message-avatar">`
+        : ""
+      }
             <div class="message-bubble">
-                ${
-                  showSender
-                    ? `
+                ${showSender
+        ? `
                     <div class="message-header">
                         <span class="message-sender">${senderName}</span>
-                        ${
-                          message.is_anonymous
-                            ? '<span class="anonymous-badge">Anonymous</span>'
-                            : ""
-                        }
+                        ${message.is_anonymous
+          ? '<span class="anonymous-badge">Anonymous</span>'
+          : ""
+        }
                     </div>
                 `
-                    : ""
-                }
-                ${
-                  message.content
-                    ? `<div class="message-content">${this.escapeHtml(
-                        message.content
-                      )}</div>`
-                    : ""
-                }
+        : ""
+      }
+                ${message.content
+        ? `<div class="message-content">${this.escapeHtml(
+          message.content
+        )}</div>`
+        : ""
+      }
                 ${mediaContent}
                 <div class="message-time">${messageTime}</div>
-                ${
-                  isOwn
-                    ? `<div class="message-status">${
-                        message.is_read ? "✓✓" : "✓"
-                      }</div>`
-                    : ""
-                }
+                ${isOwn
+        ? `<div class="message-status">${message.is_read ? "✓✓" : "✓"
+        }</div>`
+        : ""
+      }
             </div>
         `;
 
@@ -1018,14 +1093,24 @@ class ChatApp {
       if (container) {
         const messageElement = this.createMessageElement(message);
         container.appendChild(messageElement);
+        // Scroll to bottom after DOM updates
+        this.scrollMessagesToBottom(true);
 
-        // Use setTimeout to ensure DOM is updated before scrolling
-        setTimeout(() => {
-          container.scrollTo({
-            top: container.scrollHeight,
-            behavior: "smooth",
-          });
-        }, 10);
+        // If the message contains images or videos, wait for them to load and then scroll again
+        try {
+          const mediaEls = messageElement.querySelectorAll('img, video');
+          if (mediaEls && mediaEls.length > 0) {
+            mediaEls.forEach((el) => {
+              if (el.tagName.toLowerCase() === 'img') {
+                el.addEventListener('load', () => this.scrollMessagesToBottom(true), { once: true });
+              } else if (el.tagName.toLowerCase() === 'video') {
+                el.addEventListener('loadedmetadata', () => this.scrollMessagesToBottom(true), { once: true });
+              }
+            });
+          }
+        } catch (e) {
+          // ignore if query fails
+        }
       }
     }
 
